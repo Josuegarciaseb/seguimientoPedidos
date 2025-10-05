@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Button, Alert, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 
-const API_BASE = 'http://192.168.1.71:3000'; // <-- tu IP local + puerto 3000
+const API_BASE = 'http://192.168.1.90:3000'; // 🔹 Tu IP local + puerto 3000
 
 export default function Login() {
   const router = useRouter();
@@ -12,7 +12,7 @@ export default function Login() {
 
   const onLogin = async () => {
     if (!email || !password) {
-      Alert.alert('Campos requeridos', 'Ingresa email y contraseña.');
+      Alert.alert('⚠️ Campos requeridos', 'Por favor ingresa tu correo y contraseña.');
       return;
     }
 
@@ -28,13 +28,13 @@ export default function Login() {
       const data = await res.json();
 
       if (!res.ok) {
-        Alert.alert('Error', data.msg || 'No se pudo iniciar sesión.');
+        Alert.alert('❌ Error al iniciar sesión', data.msg || 'Correo o contraseña incorrectos.');
         return;
       }
 
       Alert.alert('✅ Login exitoso', `Bienvenido ${data.user.nombre}`);
     } catch (e: any) {
-      Alert.alert('Error de red', String(e?.message || e));
+      Alert.alert('🌐 Error de red', String(e?.message || e));
     } finally {
       setLoading(false);
     }
@@ -42,11 +42,11 @@ export default function Login() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
+      <Text style={styles.title}>Iniciar sesión</Text>
 
       <TextInput
         style={styles.input}
-        placeholder="Email"
+        placeholder="Correo electrónico"
         keyboardType="email-address"
         autoCapitalize="none"
         value={email}
@@ -61,9 +61,13 @@ export default function Login() {
         onChangeText={setPassword}
       />
 
-      <Button title={loading ? 'Ingresando…' : 'Iniciar sesión'} onPress={onLogin} disabled={loading} />
+      <Button
+        title={loading ? 'Ingresando…' : 'Iniciar sesión'}
+        onPress={onLogin}
+        disabled={loading}
+        color="#0a84ff"
+      />
 
-      {/* Enlace a Register */}
       <TouchableOpacity onPress={() => router.push('/register')} style={{ marginTop: 16 }}>
         <Text style={{ textAlign: 'center', color: '#0a84ff' }}>
           ¿No tienes cuenta? Regístrate
@@ -74,9 +78,24 @@ export default function Login() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 24, justifyContent: 'center', gap: 12, backgroundColor: '#fff' },
-  title: { fontSize: 28, fontWeight: 'bold', marginBottom: 16, textAlign: 'center' },
+  container: {
+    flex: 1,
+    padding: 24,
+    justifyContent: 'center',
+    gap: 12,
+    backgroundColor: '#fff',
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
   input: {
-    borderWidth: 1, borderColor: '#ddd', borderRadius: 10, padding: 12, backgroundColor: '#f7f7f7'
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 10,
+    padding: 12,
+    backgroundColor: '#f7f7f7',
   },
 });
