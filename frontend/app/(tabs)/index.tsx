@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Button, Alert, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 
-const API_BASE = 'http://192.168.1.90:3000'; // 🔹 Tu IP local + puerto 3000
+const API_BASE = 'http://172.20.10.7:3000'; // 🔹 Tu IP local + puerto 3000
 
 export default function Login() {
   const router = useRouter();

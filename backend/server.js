@@ -2,28 +2,37 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const mysql = require('mysql2/promise');
+const pool = require('./db'); // ✅ Usamos el pool compartido del archivo db.js
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Importar rutas
-const authRoutes = require('./routes/auth');
-app.use('/api/auth', authRoutes);
+// ============================
+// IMPORTAR Y REGISTRAR RUTAS
+// ============================
 
-// Conexión al pool de MySQL/MariaDB
-const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD || undefined,
-  database: process.env.DB_NAME,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
+// Auth
+try {
+  const authRoutes = require('./routes/auth');
+  app.use('/api/auth', authRoutes);
+  console.log('✅ Rutas de autenticación cargadas');
+} catch (err) {
+  console.error('❌ Error cargando rutas de autenticación:', err.message);
+}
 
-// Endpoint de prueba DB
+// Pedidos
+try {
+  const pedidosRoutes = require('./routes/pedidos');
+  app.use('/api/pedidos', pedidosRoutes);
+  console.log('✅ Rutas de pedidos cargadas');
+} catch (err) {
+  console.error('❌ Error cargando rutas de pedidos:', err.message);
+}
+
+// ============================
+// ENDPOINT DE PRUEBA DB
+// ============================
 app.get('/api/health', async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT 1 AS ok');
@@ -33,12 +42,16 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
-// Endpoint raíz
+// ============================
+// ENDPOINT RAÍZ
+// ============================
 app.get('/', (req, res) => {
   res.send('Servidor Express funcionando 🚀');
 });
 
-// Arrancar servidor
+// ============================
+// INICIO DEL SERVIDOR
+// ============================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
