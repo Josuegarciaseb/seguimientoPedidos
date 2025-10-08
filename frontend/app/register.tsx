@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Button, Alert, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 
-const API_BASE = 'http://172.20.10.7:3000'; // 🔹 Tu IP local + puerto 3000
+const API_BASE = 'http://172.20.1.14:3000'; // 🔹 Tu IP local + puerto 3000
 
 export default function Register() {
   const router = useRouter();
@@ -13,7 +13,7 @@ export default function Register() {
 
   const onRegister = async () => {
     if (!nombre || !email || !password) {
-      Alert.alert('⚠️ Campos requeridos', 'Por favor completa todos los campos.');
+      Alert.alert('⚠ Atención', 'Todos los campos son obligatorios.');
       return;
     }
 
@@ -29,14 +29,14 @@ export default function Register() {
       const data = await res.json();
 
       if (!res.ok) {
-        Alert.alert('❌ Error en registro', data.msg || 'No se pudo registrar el usuario.');
+        Alert.alert('Error', data.msg || 'No fue posible crear tu cuenta.');
         return;
       }
 
-      Alert.alert('✅ Registro exitoso', 'Tu cuenta ha sido creada correctamente.');
-      router.push('/'); // Redirige al login
+      Alert.alert('🎉 ¡Bien hecho!', 'Cuenta creada exitosamente.');
+      router.push('/'); // Redirige login
     } catch (e: any) {
-      Alert.alert('🌐 Error de red', String(e?.message || e));
+      Alert.alert('Error de conexión', String(e?.message || e));
     } finally {
       setLoading(false);
     }
@@ -44,7 +44,7 @@ export default function Register() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Crear cuenta</Text>
+      <Text style={styles.title}>Registro de usuario</Text>
 
       <TextInput
         style={styles.input}
@@ -71,7 +71,7 @@ export default function Register() {
       />
 
       <Button
-        title={loading ? 'Registrando…' : 'Registrarme'}
+        title={loading ? 'Creando cuenta…' : 'Registrarme'}
         onPress={onRegister}
         disabled={loading}
         color="#0a84ff"
@@ -79,7 +79,7 @@ export default function Register() {
 
       <TouchableOpacity onPress={() => router.push('/')} style={{ marginTop: 16 }}>
         <Text style={{ textAlign: 'center', color: '#0a84ff' }}>
-          ← Ya tengo cuenta, iniciar sesión
+          ← Tengo cuenta, ir a inicio de sesión
         </Text>
       </TouchableOpacity>
     </View>
